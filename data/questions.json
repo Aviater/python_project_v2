@@ -1,0 +1,72 @@
+[
+    {
+        "question": "The first widely known and successful programming language was developed from 1954 to 1957 at IBM, and was known as ___",
+        "answers": [
+            "Fortran", "RPG", "Lisp", "Bal"
+        ],
+        "correct": 0
+    },
+    {
+        "question": "Which is an example of infix notation?",
+        "answers": [
+            "S = 3 + 3", "S + 3 4 =", "S = + 2 2", "S = 5 6 +"
+        ],
+        "correct": 0
+    },
+    {
+        "question": "Which computer engineer was referred to simply by his username 'dmr'?",
+        "answers": [
+            "Donald Knuth", "Rob Pike", "Brian Kernighan", "Dennis Ritchie"
+        ],
+        "correct": 3
+    },
+    {
+        "question": "Which of these is NOT a command in BASIC computer language?",
+        "answers": [
+            "GOTO", "LISTEN", "LET", "PRINT"
+        ],
+        "correct": 1
+    },
+    {
+        "question": "Which database product was built by Scandinavians David Axmark, Allan, Larsson and Michael Widenius",
+        "answers": [
+            "MySQL", "Derby", "MS SQL Server", "DB2"
+        ],
+        "correct": 2
+    },
+    {
+        "question": "What is the name of the printed circuit board which houses the CPU and RAM chips?",
+        "answers": [
+            "Grandpaboard", "Motherboard","Parentboard", "Sisterboard"
+        ],
+        "correct": 1
+    },
+    {
+        "question": "Which of these terms indicates a preliminary version of code which is not yet implemented in a formal programming language?",
+        "answers": [
+            "Pseudocode", "Virtual code", "Envelope code", "Spaghetti code"
+        ],
+        "correct": 0
+    },
+    {
+        "question": "What type of technology is 'Kerberos'?",
+        "answers": [
+            "Storage", "Database", "Athentication", "Networking"
+        ],
+        "correct": 2
+    },
+    {
+        "question": "Which company collaborated with Microsoft to build OS/2?",
+        "answers": [
+            "HP", "Apple", "IBM", "Xerox"
+        ],
+        "correct": 2
+    },
+    {
+        "question": "In C, what is the index of the first element of any array?",
+        "answers": [
+            "-1", "10", "0", "1"
+        ],
+        "correct": 2
+    }
+]
