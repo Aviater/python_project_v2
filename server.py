@@ -28,7 +28,7 @@ class Connection:
         with open('./data/questions.json', 'r') as json_file:
             data = json.load(json_file)
             # print(data[0])
-            return data
+            return data[0]
 
     # Start the server
     def start_server(self, max_connections):
@@ -69,7 +69,7 @@ class Connection:
             # self.send_response_to_all
 
         self.clientsocket.close()
-        
+
     # Generate player
     def generate_player(self, name):
         for client in self.clients:
@@ -107,7 +107,8 @@ class Connection:
     def send_response(self, clientsocket, payload):
         message = pickle.dumps({
             'header': {
-                'type': 'str'
+                'type': 'str',
+                'clients': len(self.clients)
             }, 
             'body': {
                 'players': self.get_all_players(),
@@ -127,7 +128,7 @@ class Connection:
         if (threading.activeCount() - 1) == 2:
             print('==== Players Ready ==== \n')
             for i,client in enumerate(self.clients):
-                self.send_response(self.clients[i]['connection'], 'All players ready!')
+                self.send_response(self.clients[i]['connection'], self.load_json())
                 print(f'[{i}]:', client)
                 
 

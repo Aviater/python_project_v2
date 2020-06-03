@@ -1,6 +1,9 @@
 import socket
 import pickle
-import threading, queue
+import threading
+from queue import Queue
+
+# queue = Queue()
 
 class Connection:
     clientsocket = None
@@ -18,7 +21,7 @@ class Connection:
         self.client.connect((self.host, self.port))
         
     # Handle the server response
-    def handle_response(self):
+    def handle_response(self, queue):
         connected = True
         while connected:
             # Read header
@@ -29,10 +32,20 @@ class Connection:
                 # Read body
                 msg_encoded = self.client.recv(msg_length)
                 msg = pickle.loads(bytes(msg_encoded))
-                print('[HEADER]:', msg_length)
-                print('[ BODY ]:', msg['body']['content'])
                 
+                if msg['header']['clients'] == 2:
+                    queue.put({
+                        'ready': True,
+                        'players': msg['body']['players'],
+                        'data': msg['body']['content']
+                    })
+                    # print('[QUEUE]:', queue.get())
+                    
+                # Output
+                print('[LENGTH]:', msg_length)
+                print('[HEADER]:', msg['header'])
                 print('[PLAYER]:', msg['body']['players'])
+                print('[ BODY ]:', msg['body']['content'])
             
             connected = False
             
@@ -43,7 +56,7 @@ class Connection:
             },
             'body': payload
         })
-        
+
         # Set header
         msg_length = len(message)
         header = str(msg_length).encode(self.char_format)
@@ -51,15 +64,17 @@ class Connection:
         self.client.send(header)
         self.client.send(bytes(message))
         
-def main(player_name):
+def main(player_name, queue):
     HOST = socket.gethostbyname(socket.gethostname())
     
     con1 = Connection(64, 9999, HOST, 'utf-8')
     
     con1.connect_to_server()
     con1.send_message(player_name)
-    con1.handle_response()
-    con1.handle_response()
-    con1.handle_response()
-    con1.handle_response()
-    con1.handle_response()
+    setup = True
+    while setup:
+        con1.handle_response(queue)
+    # con1.handle_response(queue)
+    # con1.handle_response(queue)
+    # con1.handle_response(queue)
+    # con1.handle_response(queue)
