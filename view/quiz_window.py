@@ -45,7 +45,9 @@ class QuizWindow:
         button_1.grid(column=1, row=3, sticky=(W, E))
 
     def quiz_window(self):
+        # Destroy previous frame
         self.frame.destroy()
+        
         # Create frame inside window (root) to hold all widgets
         self.frame = ttk.Frame(self.root, padding="10 10 10 10")
 
@@ -53,13 +55,11 @@ class QuizWindow:
         self.frame.grid(column=0, row=0, sticky=(N, W, E, S))
         self.root.columnconfigure(0, weight=1)
         self.root.rowconfigure(0, weight=1)
-        
-        time.sleep(2)
-        # controller.fetch_question()
-        print('FETCHED: ', queue.get())
 
-        # Declare vars
-        # question, answer1, answer2, answer3, answer4, correct = client_controller.fetch_data()
+        # Fetch question
+        # question = controller.fetch_question(queue)
+        # print('FETCHED: ', question)
+        
         # Create label
         label_1_txt = StringVar()
         label_2 = ttk.Label(self.frame, text='question')

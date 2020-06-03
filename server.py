@@ -90,17 +90,18 @@ class Connection:
             msg = pickle.loads(bytes(msg_encoded))
 
             # Output
-            print('[HEADER]:', msg_length)
-            print('[ BODY ]:', msg)
+            print('[=======]')
+            print('[ LENGTH]:', msg_length)
+            print('[REQUEST]:', msg)
+            print('[=======]')
 
         return msg
-    
+
     def get_all_players(self):
         player_info = []
         for client in self.clients:
-            print('PLAYER INFO:', client['player'].get_props())
             player_info.append(client['player'].get_props())
-        
+            # print('PLAYER INFO:', client['player'].get_props())
         return player_info
 
     # Send response to client
@@ -122,6 +123,12 @@ class Connection:
         header += b' ' * (self.header_length - len(header))
         clientsocket.send(header)
         clientsocket.send(bytes(message))
+        
+        # Output
+        print('[========]')
+        print('[ CLIENT ]:', clientsocket)
+        print('[RESPONSE]:', pickle.loads(bytes(message)))
+        print('[========]')
 
     # Send message to all clients
     def broadcast(self):
@@ -129,7 +136,7 @@ class Connection:
             print('==== Players Ready ==== \n')
             for i,client in enumerate(self.clients):
                 self.send_response(self.clients[i]['connection'], self.load_json())
-                print(f'[{i}]:', client)
+            print('Message sent to all clients')
                 
 
 def main():
