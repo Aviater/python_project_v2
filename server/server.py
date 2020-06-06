@@ -10,8 +10,6 @@ class Connection:
     address = None
     server = None
     clients = []
-    player_info = []
-    queue = Queue()
     def __init__(self, header_length, port, host, char_format):
         self.header_length = header_length
         self.port = port
@@ -62,11 +60,10 @@ class Connection:
             request = self.handle_request()
             print(f'[{self.address}]: {request["body"]} has joined the game.')
             self.generate_player(request['body'])
-            self.send_response(self.clientsocket, 'Connected successfully!')
+            # self.send_response(self.clientsocket, 'Connected successfully!')
             self.broadcast()
-            
-            # questions = self.load_json()
-            # self.send_response_to_all
+            request = self.handle_request()
+            print('REQUEST:', request)
 
         self.clientsocket.close()
 
@@ -91,17 +88,19 @@ class Connection:
 
             # Output
             print('[=======]')
+            print('[  FROM ]:', self.clientsocket)
+            print('[=======]')
             print('[ LENGTH]:', msg_length)
             print('[REQUEST]:', msg)
             print('[=======]')
 
         return msg
 
+    # Get all Player objects information
     def get_all_players(self):
         player_info = []
         for client in self.clients:
             player_info.append(client['player'].get_props())
-            # print('PLAYER INFO:', client['player'].get_props())
         return player_info
 
     # Send response to client
@@ -137,7 +136,6 @@ class Connection:
             for i,client in enumerate(self.clients):
                 self.send_response(self.clients[i]['connection'], self.load_json())
             print('Message sent to all clients')
-                
 
 def main():
     HOST = socket.gethostbyname(socket.gethostname())

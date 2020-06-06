@@ -3,12 +3,20 @@ import pickle
 import threading
 from queue import Queue
 
-# queue = Queue()
+# Last cient to connect receives data in different order
+# first client =  - 'Connected successfully'
+#                 - JSON data
+
+# second client = - JSON data
+#                 - 'Connected successfully'
+                
+# Queues are inversed relative to eachother
 
 class Connection:
     clientsocket = None
     address = None
     client = None
+    HOST = socket.gethostbyname(socket.gethostname())
     def __init__(self, header_length, port, host, char_format):
         self.header_length = header_length
         self.port = port
@@ -34,14 +42,15 @@ class Connection:
                 msg = pickle.loads(bytes(msg_encoded))
                 
                 if msg['header']['clients'] == 2:
-                    queue.put({
+                    payload = {
                         'ready': True,
                         'players': msg['body']['players'],
                         'data': msg['body']['content']
-                    })
-                    # print('[QUEUE]:', queue.get())
+                    }
+                    queue.put(payload)
                     
                 # Output
+                print('---- RESPONSE ----')
                 print('[LENGTH]:', msg_length)
                 print('[HEADER]:', msg['header'])
                 print('[PLAYER]:', msg['body']['players'])
@@ -56,7 +65,7 @@ class Connection:
             },
             'body': payload
         })
-
+        
         # Set header
         msg_length = len(message)
         header = str(msg_length).encode(self.char_format)
@@ -64,17 +73,7 @@ class Connection:
         self.client.send(header)
         self.client.send(bytes(message))
         
-def main(player_name, queue):
-    HOST = socket.gethostbyname(socket.gethostname())
+        print('---- REQUEST ----')
+        print('[LENGTH]:', msg_length)
+        print('[BODY]:', message)
     
-    con1 = Connection(64, 9999, HOST, 'utf-8')
-    
-    con1.connect_to_server()
-    con1.send_message(player_name)
-    setup = True
-    while setup:
-        con1.handle_response(queue)
-    # con1.handle_response(queue)
-    # con1.handle_response(queue)
-    # con1.handle_response(queue)
-    # con1.handle_response(queue)
