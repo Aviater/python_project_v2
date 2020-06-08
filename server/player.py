@@ -10,6 +10,7 @@ class Player:
     def reduce_health(self, amount):
         if self.hitpoints <= amount:
             print(f'{self.name} has won the game!')
+            self.hitpoints = 0
             return
         
         self.hitpoints = self.hitpoints - amount

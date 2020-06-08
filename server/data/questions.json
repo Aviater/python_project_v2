@@ -68,5 +68,33 @@
             "-1", "10", "0", "1"
         ],
         "correct": 2
+    },
+    {
+        "question": "In the programming term 'API', what does the 'I' stand for?",
+        "answers": [
+            "Icon", "Indexing", "Interpreter", "Interface"
+        ],
+        "correct": 3
+    },
+    {
+        "question": "Which datatype in Java is named after a mathematician and has values 'true' and 'false'?",
+        "answers": [
+            "String", "Char", "Boolean", "Alan"
+        ],
+        "correct": 2
+    },
+    {
+        "question": "What is a term meaning to convert one data type to another?",
+        "answers": [
+            "Splint", "Cast", "Fumble", "Sharp"
+        ],
+        "correct": 1
+    },
+    {
+        "question": "In whcih version of Windows did the Start Menu make its first appearance?",
+        "answers": [
+            "95", "2000", "7", "XP"
+        ],
+        "correct": 0
     }
 ]

@@ -46,10 +46,6 @@ class Connection:
                         'data': msg['body']['content']
                     }
                     queue.put(payload)
-                    # TEMPORARY, MUST BE CONTROLLED BY CONTROLLER/UI
-                    # if msg['header']['type'] == 'state_update':
-                    #     print('IS STATE UPDATE')
-                    #     queue.get()
                     
                 # Output
                 print('---- RESPONSE ----')

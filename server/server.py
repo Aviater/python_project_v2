@@ -3,18 +3,15 @@ import json
 import pickle
 import threading
 import player
-from queue import Queue
 
-queue = Queue()
-
-# clients = []
 class Connection:
     clientsocket = None
     address = None
     server = None
     clients = []
     player = None
-    QUESTION_DAMAGE = 1
+    question_index = 0
+    QUESTION_DAMAGE = 2
     def __init__(self, HEADER, HOST, PORT, FORMAT, quiz_data, clientsocket, address):
         self.header_length = HEADER
         self.host = HOST
@@ -51,32 +48,27 @@ class Connection:
         print(f'[{self.address}]: {request["body"]} has joined the game.')
         self.player = player.Player(request['body'], 10)
         # self.send_response('Connected successfully!')
-        
-        # Quiz loop step
-        i = 0
-        broadcast('quiz_data', self.quiz_data[i])
+
+        # Broadcast data to all players
+        broadcast('quiz_data', self.quiz_data[self.question_index])
+
+        # Quiz loop step                         
         while connected:
-            # broadcast(self.quiz_data[i])
             request = self.handle_request()
-            i = i + 1
+            self.question_index = self.question_index + 1
             
             if request['body'] == True:
                 for client in Connection.clients:
                     if client.clientsocket != self.clientsocket:
                         client.player.reduce_health(self.QUESTION_DAMAGE)
-                        self.send_response('quiz_data', self.quiz_data[i])
+                        self.send_response('quiz_data', self.quiz_data[self.question_index])
                         
                         for client in Connection.clients:
                             if self != client:
-                                client.send_response('state_update', '')
+                                client.send_response('state_update', client.quiz_data[client.question_index])
             elif request['body'] == False:
-                self.send_response('quiz_data', self.quiz_data[i])
-            print('INDEX:', i)
-            
-
-            # Send new question
-            # self.send_response(self.get_quiz_data(index))
-            #     broadcast()
+                self.send_response('quiz_data', self.quiz_data[self.question_index])
+            print('INDEX:', self.question_index)
         self.clientsocket.close()
 
     def handle_request(self):
