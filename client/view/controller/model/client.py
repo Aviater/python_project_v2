@@ -3,14 +3,11 @@ import pickle
 import threading
 from queue import Queue
 
-# Last cient to connect receives data in different order
-# first client =  - 'Connected successfully'
-#                 - JSON data
+# UI reads state_update response and tries to parse in
+# non-existent data.
 
-# second client = - JSON data
-#                 - 'Connected successfully'
-                
-# Queues are inversed relative to eachother
+# Hint: Player properties must be rendered in their own UI method for parsing
+# state_update data only.
 
 class Connection:
     clientsocket = None
@@ -45,9 +42,14 @@ class Connection:
                     payload = {
                         'ready': True,
                         'players': msg['body']['players'],
+                        'header': msg['header'],
                         'data': msg['body']['content']
                     }
                     queue.put(payload)
+                    # TEMPORARY, MUST BE CONTROLLED BY CONTROLLER/UI
+                    # if msg['header']['type'] == 'state_update':
+                    #     print('IS STATE UPDATE')
+                    #     queue.get()
                     
                 # Output
                 print('---- RESPONSE ----')
@@ -55,13 +57,14 @@ class Connection:
                 print('[HEADER]:', msg['header'])
                 print('[PLAYER]:', msg['body']['players'])
                 print('[ BODY ]:', msg['body']['content'])
+                print('------------------')
             
             connected = False
             
-    def send_message(self, payload):
+    def send_message(self, header, payload):
         message = pickle.dumps({
             'header': {
-                'type': 'str'
+                'type': header
             },
             'body': payload
         })
@@ -75,5 +78,5 @@ class Connection:
         
         print('---- REQUEST ----')
         print('[LENGTH]:', msg_length)
-        print('[BODY]:', message)
+        print('[BODY]:', pickle.loads(bytes(message)))
     

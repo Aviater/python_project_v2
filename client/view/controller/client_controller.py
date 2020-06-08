@@ -2,37 +2,41 @@ from .model.client import Connection
 import threading
 from queue import Queue
 
-def player_ready(entered_name, view_instance, view_method, queue):
+def player_ready(entered_name, view_instance, quiz_window, queue):
     player_name = entered_name
     print('player:', player_name)
-    spawn_connection_thread(player_name, queue)
-    start_quiz(player_name, view_instance, view_method, queue)
+    spawn_connection_thread(player_name, view_instance, quiz_window, queue)
+    # start_quiz(player_name, view_instance, quiz_window, queue)
     
 
-def spawn_connection_thread(player_name, queue):
-    thread = threading.Thread(target= lambda: connection_thread(player_name, queue))
+def spawn_connection_thread(player_name, view_instance, quiz_window, queue):
+    thread = threading.Thread(target= lambda: connection_thread(player_name, view_instance, quiz_window, queue))
     thread.daemon = True
     thread.start()
     print('Thread spawned:', thread)
     print('Thread name:', thread.name)
     
-def connection_thread(player_name, queue):
+def connection_thread(player_name, view_instance, quiz_window, queue):
     HOST = Connection.HOST
     global con1
     con1 = Connection(64, 9999, HOST, 'utf-8')
     
     con1.connect_to_server()
-    con1.send_message(player_name)
+    con1.send_message('str', player_name)
     setup = True
     while setup:
+        
+        
         con1.handle_response(queue)
+        if not queue.empty():
+            print('Queue not empty:', queue.queue)
+            start_quiz(player_name, view_instance, quiz_window, queue)
+        
+    
 
-def start_quiz(player_name, view_instance, view_method, queue):
-    queue_data = queue.get()
-    queue.put(queue_data)
-    if queue_data['ready'] == True:
-        print('[Queue]:', queue_data)
-        view_method(view_instance, player_name)
+def start_quiz(player_name, view_instance, quiz_window, queue):
+    # print('[Queue]:', queue_data)
+    quiz_window(view_instance, player_name)
     return
 
 def fetch_data(queue):
@@ -53,9 +57,12 @@ def render_opponent_info(player_name, data):
 
 def answer_question(num, queue):
     queue_data = queue.get()
-    queue.put(queue_data)
+    # queue.put(queue_data)
+    print('Queue length:', queue.queue)
     print('Queue contents:', queue_data)
-    if num == queue_data['data']['correct']:
-        print('WINNER WINNER CHICKEN DINNER')
-        con1.send_message('whaaat')
+    if queue_data['header']['type'] == 'quiz_data':
+        if num == queue_data['data']['correct']:
+            con1.send_message('answer', True)
+        else:
+            con1.send_message('answer', False)
         
